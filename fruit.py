@@ -32,7 +32,12 @@ class FruitMarket:
             return await (await fruit_stand.check_price.remote(amount))
 
 
-@serve.deployment(user_config={"price": 3})
+@serve.deployment(user_config={"price": 3}, autoscaling_config={
+        "min_replicas": 1,
+        "initial_replicas": 1,
+        "max_replicas": 5,
+        "target_num_ongoing_requests_per_replica": 10,
+    })
 class MangoStand:
 
     DEFAULT_PRICE = 1
