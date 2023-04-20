@@ -10,7 +10,7 @@ from ray.serve.deployment_graph import ClassNode
 from ray.serve.handle import RayServeDeploymentHandle
 
 
-#@serve.deployment(num_replicas=2)
+@serve.deployment(num_replicas=2)
 class FruitMarket:
     def __init__(
         self,
@@ -32,7 +32,7 @@ class FruitMarket:
             return await (await fruit_stand.check_price.remote(amount))
 
 
-@serve.deployment(user_config={"price": 2})
+@serve.deployment(user_config={"price": 3})
 class MangoStand:
 
     DEFAULT_PRICE = 1
@@ -94,10 +94,8 @@ with InputNode() as query:
     orange_stand = OrangeStand.bind()
     pear_stand = PearStand.bind()
 
-    #fruit_market = FruitMarket.bind(mango_stand, orange_stand, pear_stand)
+    fruit_market = FruitMarket.bind(mango_stand, orange_stand, pear_stand)
 
-    #net_price = fruit_market.check_price.bind(fruit, amount)
-
-    net_price = mango_stand.check_price.bind(amount)
+    net_price = fruit_market.check_price.bind(fruit, amount)
 
 deployment_graph = DAGDriver.bind(net_price, http_adapter=json_resolver)
