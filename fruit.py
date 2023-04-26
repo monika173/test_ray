@@ -9,7 +9,7 @@ from starlette.requests import Request
 from ray.serve.deployment_graph import ClassNode
 from ray.serve.handle import RayServeDeploymentHandle
 
-
+@ray.remote()
 @serve.deployment(num_replicas=2)
 class FruitMarket:
     def __init__(
@@ -31,7 +31,7 @@ class FruitMarket:
             fruit_stand = self.directory[fruit]
             return await (await fruit_stand.check_price.remote(amount))
 
-
+@ray.remote()
 @serve.deployment(user_config={"price": 3}, max_concurrent_queries = 10, autoscaling_config={
         "min_replicas": 1,
         "initial_replicas": 1,
